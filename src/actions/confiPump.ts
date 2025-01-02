@@ -4,6 +4,7 @@ import {
     Memory,
     State,
     HandlerCallback,
+    elizaLogger,
 } from "@elizaos/core";
 import { generateObject, composeContext, ModelClass } from "@elizaos/core";
 import {
@@ -162,13 +163,19 @@ export const confiPump: Action = {
         return true; // No extra validation needed
     },
 
-    handler: async (
+    handler: async ({
+        runtime,
+        message,
+        state,
+        options,
+        callback,
+    }: {
         runtime: IAgentRuntime,
         message: Memory,
-        state?: State,
-        options?: { [key: string]: unknown },
-        callback?: HandlerCallback
-    ) => {
+        state: State,
+        options: any,
+        callback: HandlerCallback
+    }) => {
         let success = false;
 
         // Initialize or update state

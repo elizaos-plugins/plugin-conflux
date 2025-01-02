@@ -76,13 +76,19 @@ export const transfer: Action = {
         // no extra validation needed
         return true;
     },
-    handler: async (
+    handler: async ({
+        runtime,
+        message,
+        state,
+        options,
+        callback,
+    }: {
         runtime: IAgentRuntime,
         message: Memory,
-        state?: State,
-        options?: { [key: string]: unknown },
-        callback?: HandlerCallback
-    ) => {
+        state: State,
+        options: any,
+        callback: HandlerCallback
+    }) => {
         if (!state) {
             state = (await runtime.composeState(message)) as State;
         } else {
