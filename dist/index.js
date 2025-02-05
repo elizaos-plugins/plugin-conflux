@@ -118,7 +118,7 @@ import {
   universalSignatureValidatorByteCode,
   withResolvers,
   wrapConstructor
-} from "./chunk-WL3Q52WV.js";
+} from "./chunk-2OJMP5IQ.js";
 import "./chunk-PR4QN5HX.js";
 
 // src/actions/transfer.ts
@@ -4154,17 +4154,19 @@ var transfer = {
       }
     ]
   ],
-  validate: async (runtime, message) => {
+  // eslint-disable-next-line
+  validate: async (_runtime, _message) => {
     return true;
   },
-  handler: async (runtime, message, state, options, callback) => {
-    if (!state) {
-      state = await runtime.composeState(message);
+  handler: async (runtime, message, state, _options, callback) => {
+    let currentState = state;
+    if (!currentState) {
+      currentState = await runtime.composeState(message);
     } else {
-      state = await runtime.updateRecentMessageState(state);
+      currentState = await runtime.updateRecentMessageState(currentState);
     }
     const context = composeContext({
-      state,
+      state: currentState,
       template: confluxTransferTemplate
     });
     const content = await generateObject({
@@ -4477,17 +4479,19 @@ var bridgeTransfer = {
       }
     ]
   ],
-  validate: async (runtime, message) => {
+  // eslint-disable-next-line
+  validate: async (_runtime, _message) => {
     return true;
   },
-  handler: async (runtime, message, state, options, callback) => {
-    if (!state) {
-      state = await runtime.composeState(message);
+  handler: async (runtime, message, state, _options, callback) => {
+    let currentState = state;
+    if (!currentState) {
+      currentState = await runtime.composeState(message);
     } else {
-      state = await runtime.updateRecentMessageState(state);
+      currentState = await runtime.updateRecentMessageState(currentState);
     }
     const context = composeContext2({
-      state,
+      state: currentState,
       template: confluxBridgeTransferTemplate
     });
     const content = await generateObject2({
@@ -9806,6 +9810,17 @@ var confluxESpaceTestnet = /* @__PURE__ */ defineChain({
   }
 });
 
+// src/templates/confiPump.ts
+var confiPumpTemplate = `
+Extract Conflux ConfiPump Parameters, including token creation, buy, and sell, from the latest messages:
+
+{{recentMessages}}
+
+For token creation, should come up with a name, symbol, and description.
+For token buy, should come up with the amount of CFX to buy which token (with token address starting with 0x).
+For token sell, should come up with the amount of token to sell (with token address starting with 0x).
+`;
+
 // src/abi/meme.ts
 var MEMEABI = [
   {
@@ -11633,7 +11648,7 @@ async function ensureAllowance(walletClient, rpcUrl, account, tokenAddress, meme
     await publicClient.waitForTransactionReceipt({ hash });
     elizaLogger.log(`Approving success: ${hash}`);
   } else {
-    elizaLogger.log(`No need to approve`);
+    elizaLogger.log("No need to approve");
   }
 }
 var confiPump = {
@@ -11708,19 +11723,21 @@ var confiPump = {
       }
     ]
   ],
-  validate: async (runtime, message) => {
+  // eslint-disable-next-line
+  validate: async (_runtime, _message) => {
     return true;
   },
-  handler: async (runtime, message, state, options, callback) => {
+  handler: async (runtime, message, state, _options, callback) => {
     let success = false;
-    if (!state) {
-      state = await runtime.composeState(message);
+    let currentState = state;
+    if (!currentState) {
+      currentState = await runtime.composeState(message);
     } else {
-      state = await runtime.updateRecentMessageState(state);
+      currentState = await runtime.updateRecentMessageState(currentState);
     }
     const context = composeContext3({
-      state,
-      template: confluxTransferTemplate
+      state: currentState,
+      template: confiPumpTemplate
     });
     const content = await generateObject3({
       runtime,
@@ -11796,7 +11813,7 @@ var confiPump = {
             ]
           });
           break;
-        case "SELL_TOKEN":
+        case "SELL_TOKEN": {
           if (!isPumpSellContent(contentObject)) {
             elizaLogger.error(
               "Invalid PumpSellContent: ",
@@ -11834,6 +11851,7 @@ var confiPump = {
           });
           value = 0n;
           break;
+        }
       }
       const publicClient = createPublicClient3({
         transport: http3(rpcUrl),
