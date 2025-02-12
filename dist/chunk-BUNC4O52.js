@@ -1986,6 +1986,7 @@ function weierstrass(curveDef) {
   }
   Point2.BASE._setWindowSize(8);
   function verify(signature, msgHash, publicKey, opts = defaultVerOpts) {
+    var _a;
     const sg = signature;
     msgHash = ensureBytes("msgHash", msgHash);
     publicKey = ensureBytes("publicKey", publicKey);
@@ -2030,7 +2031,7 @@ function weierstrass(curveDef) {
     const is = invN(s);
     const u1 = modN2(h * is);
     const u2 = modN2(r * is);
-    const R = Point2.BASE.multiplyAndAddUnsafe(P, u1, u2)?.toAffine();
+    const R = (_a = Point2.BASE.multiplyAndAddUnsafe(P, u1, u2)) == null ? void 0 : _a.toAffine();
     if (!R)
       return false;
     const v = modN2(R.x);
@@ -2553,4 +2554,4 @@ export {
 @noble/curves/esm/secp256k1.js:
   (*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) *)
 */
-//# sourceMappingURL=chunk-4L6P6TY5.js.map
+//# sourceMappingURL=chunk-BUNC4O52.js.map
